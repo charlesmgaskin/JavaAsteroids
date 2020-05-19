@@ -91,6 +91,11 @@ public class Ship {
 		}
 	}
 	
+	public Shot shoot() {
+		shotDelayLeft = shotDelay;
+		return new Shot(x,y,angle,xVelocity,yVelocity,40);
+	}
+	
 	public void setAccelerating(boolean accelerating) {
 		this.accelerating = accelerating;
 	}
@@ -116,7 +121,7 @@ public class Ship {
 		return active;
 	}
 	public boolean canShoot() {
-		if(shotDelay>0) {
+		if(shotDelayLeft>0) {
 			return false;
 		} else {
 			return true;
