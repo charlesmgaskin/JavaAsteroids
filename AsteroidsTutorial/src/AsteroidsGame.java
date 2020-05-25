@@ -4,8 +4,9 @@ import java.awt.event.*;
 
 public class AsteroidsGame extends Applet implements KeyListener, Runnable{
 
-	int height,width, numShots;
-	long startTime, endTime, framePeriod;
+	int height,width,numShots,numAsteroids,astNumHits,astNumSplit,level;
+	double astRadius,minAstVel,maxAstVel;
+	long startTime, endTime,framePeriod;
 	boolean paused,shooting;
 	Thread thread;
 	Dimension dim;
@@ -13,18 +14,22 @@ public class AsteroidsGame extends Applet implements KeyListener, Runnable{
 	Graphics g;
 	Ship ship;
 	Shot[] shots;
+	Asteroid[] asteroids;
 	
 	private static final long serialVersionUID = 6099393013309081816L;
 
 	public void init() {
 		width = 1440;
 		height = (width/16)*9;
-		resize(width,height);
-		ship=new Ship(width/2,height/2,0,.35,.98,.1,12);
-		paused=true;
-		shots=new Shot[400];
-		numShots = 0;
-		shooting= false;
+		resize(width,height);	
+		shots=new Shot[41];
+		numAsteroids = 0;
+		level=0;
+		astRadius=60;
+		minAstVel=.5;
+		maxAstVel=5;
+		astNumHits=3;
+		astNumSplit=2;
 		startTime=0;
 		endTime=0;
 		framePeriod=25;
@@ -36,6 +41,19 @@ public class AsteroidsGame extends Applet implements KeyListener, Runnable{
 		addKeyListener(this);
 	}
 	
+	public void setUpNextLevel() {
+		level++;
+		ship=new Ship(width/2,height/2,0,.35,.98,.1,12);
+		numShots = 0;
+		paused=true;
+		shooting= false;
+		asteroids=new Asteroid[level*(int)Math.pow(astNumSplit,astNumHits-1)+1];
+		numAsteroids=level;
+		for(int i = 0; i<numAsteroids;i++) {
+			asteroids[i] = new Asteroid(Math.random()*dim.width,Math.random()*dim.height,astRadius,minAstVel,maxAstVel,astNumHits,astNumSplit);
+		}
+	}
+	
 	public void paint(Graphics gfx) {
 		g.setColor(Color.black);
 		g.fillRect(0, 0, width, height);
@@ -43,6 +61,11 @@ public class AsteroidsGame extends Applet implements KeyListener, Runnable{
 		for(int i=0;i<numShots;i++) {
 			shots[i].draw(g);
 		}
+		for(int i=0;i<numAsteroids;i++) {
+			asteroids[i].draw(g);
+		}
+		g.setColor(Color.cyan);
+		g.drawString("Level "+ level,20,20);
 		gfx.drawImage(img,0,0,this);
 	}
 	
@@ -53,6 +76,9 @@ public class AsteroidsGame extends Applet implements KeyListener, Runnable{
 	public void run() {
 		for(;;) {
 			startTime=System.currentTimeMillis();
+			if(numAsteroids<=0) {
+				setUpNextLevel();
+			}
 			if(!paused) {
 				ship.move(dim.width,dim.height);
 				for(int i=0; i<numShots;i++) {
@@ -62,6 +88,7 @@ public class AsteroidsGame extends Applet implements KeyListener, Runnable{
 						i--;
 					}
 				}
+				updateAsteroids();
 				if(shooting && ship.canShoot()) {
 					shots[numShots]=ship.shoot();
 					numShots++;
@@ -84,7 +111,44 @@ public class AsteroidsGame extends Applet implements KeyListener, Runnable{
 		}
 		numShots--;
 	}
+	
+	private void deleteAsteroid(int index) {
+		for(int i=index;i<numAsteroids;i++) {
+			asteroids[i]=asteroids[i+1];
+			asteroids[numAsteroids]=null;
+		}
+		numAsteroids--;
+	}
 
+	private void addAsteroid(Asteroid ast) {
+		asteroids[numAsteroids] = ast;
+		numAsteroids++;
+	}
+	
+	private void updateAsteroids() {
+		for(int i=0; i<numAsteroids;i++) {
+			asteroids[i].move(dim.width, dim.height);
+			if(asteroids[i].shipCollision(ship)) {
+				level--;
+				numAsteroids=0;
+				return;
+			}
+			for(int j=0;j<numShots;j++) {
+				if(asteroids[i].shotCollision(shots[j])) {
+					deleteShot(j);
+					if(asteroids[i].getHitsLeft()>1) {
+						for(int k=0;k<asteroids[i].getNumSplit();k++) {
+							addAsteroid(asteroids[i].createSplitAsteroid(minAstVel, maxAstVel));
+						}
+					}
+					deleteAsteroid(i);
+					j=numShots;
+					i--;
+				}
+			}
+		}
+	}
+	
 	@Override
 	public void keyPressed(KeyEvent e) {
 		if(e.getKeyCode() == KeyEvent.VK_ENTER) {
