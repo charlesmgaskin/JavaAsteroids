@@ -15,7 +15,7 @@ public class Asteroid {
 		double vel = minVelocity + Math.random()*(maxVelocity-minVelocity),
 				dir = 2*Math.PI*Math.random();
 		xVelocity = vel*Math.cos(dir);
-		yVelocity = vel*Math.asin(dir);
+		yVelocity = vel*Math.sin(dir);
 	}
 	
 	public void move(int scrnWidth, int scrnHeight) {
