@@ -28,7 +28,7 @@ public class AsteroidsGame extends Applet implements KeyListener, Runnable{
 		astRadius=60;
 		minAstVel=.5;
 		maxAstVel=5;
-		astNumHits=3;
+		astNumHits=5;
 		astNumSplit=2;
 		startTime=0;
 		endTime=0;

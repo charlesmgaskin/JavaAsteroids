@@ -36,7 +36,7 @@ public class Asteroid {
 	
 	public void draw(Graphics g) {
 		g.setColor(Color.gray);
-		g.fillOval((int)(x-radius+.5), (int)(y-radius-.5), (int)(2*radius),(int)(2*radius));
+		g.drawOval((int)(x-radius+.5), (int)(y-radius-.5), (int)(2*radius),(int)(2*radius));
 	}
 	
 	public boolean shipCollision(Ship ship) {
@@ -66,4 +66,5 @@ public class Asteroid {
 	public int getNumSplit(){
 		return numSplit;
 	}	
+	
 }
