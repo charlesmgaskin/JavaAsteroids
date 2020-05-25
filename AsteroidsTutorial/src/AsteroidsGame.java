@@ -39,6 +39,7 @@ public class AsteroidsGame extends Applet implements KeyListener, Runnable{
 		thread=new Thread(this);
 		thread.start();
 		addKeyListener(this);
+		System.out.println("Test");
 	}
 	
 	public void setUpNextLevel() {
