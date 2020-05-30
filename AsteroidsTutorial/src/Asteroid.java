@@ -1,5 +1,6 @@
 import java.awt.*;
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Asteroid {
 	double x,y, xVelocity, yVelocity, radius,angle,direction;
@@ -34,11 +35,9 @@ public class Asteroid {
 				finished =true;
 				break;
 			}
-			System.out.println(angle);
 			xPts.add((int)(radius*Math.cos(angle)));
 			yPts.add((int)(radius*Math.sin(angle)));
 		}
-		System.out.println(xPts.size());
 	}
 	
 	public void move(int scrnWidth, int scrnHeight) {
@@ -72,7 +71,7 @@ public class Asteroid {
 	}
 	
 	public boolean shipCollision(Ship ship) {
-		if(Math.pow(radius+ship.getRadius(), 2) > Math.pow(ship.getX()-x,2)+Math.pow(ship.getY()-y, 2) && ship.isActive()) {
+		if(Math.pow((radius*0.95)+ship.getRadius(), 2) > Math.pow(ship.getX()-x,2)+Math.pow(ship.getY()-y, 2) && ship.isActive()) {
 			return true;
 		} else {
 			return false;

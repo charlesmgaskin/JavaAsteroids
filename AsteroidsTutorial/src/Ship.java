@@ -91,6 +91,11 @@ public class Ship {
 		}
 	}
 	
+	public void teleport(int newX, int newY) {
+		setX(newX);
+		setY(newY);
+	}
+	
 	public Shot shoot() {
 		shotDelayLeft = shotDelay;
 		return new Shot(x,y,angle,xVelocity,yVelocity,40);
@@ -110,6 +115,12 @@ public class Ship {
 	}
 	public double getY() {
 		return y;
+	}
+	public void setX(int x) {
+		this.x= x;
+	}
+	public void setY(int y ) {
+		this.y= y;
 	}
 	public double getRadius() {
 		return radius;
