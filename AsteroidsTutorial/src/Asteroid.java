@@ -1,27 +1,45 @@
 import java.awt.*;
+import java.util.*;
 
 public class Asteroid {
-	double x,y, xVelocity, yVelocity, radius;
-	int hitsLeft, numSplit;
+	double x,y, xVelocity, yVelocity, radius,angle,direction;
+	int hitsLeft, numSplit, magnitude;
+	boolean finished;
+	
+	ArrayList<Integer> xPts = new ArrayList<Integer>();
+	ArrayList<Integer> yPts = new ArrayList<Integer>();
+	
+	int[] xPtsArr,yPtsArr;
 	
 	public Asteroid(double x, double y, double radius, double minVelocity, double maxVelocity, 
-			int hitsLeft, int numSplit) {
+					int hitsLeft, int numSplit) {
 		this.x = x;
 		this.y = y;
 		this.radius = radius;
 		this.hitsLeft = hitsLeft;
 		this.numSplit = numSplit;
 		
+		angle =0;
+		direction = 0.5 * Math.PI;
+		
 		double vel = minVelocity + Math.random()*(maxVelocity-minVelocity),
 				dir = 2*Math.PI*Math.random();
 		xVelocity = vel*Math.cos(dir);
 		yVelocity = vel*Math.sin(dir);
+		finished = false;
+		while(!finished) {
+			angle = angle + (direction*Math.random());
+			xPts.add((int)(radius*Math.cos(angle)));
+			yPts.add((int)(radius*Math.sin(angle)));
+			if(angle >= 2*Math.PI) {
+				finished =true;
+			}
+		}
 	}
 	
 	public void move(int scrnWidth, int scrnHeight) {
 		x+=xVelocity;
 		y+=yVelocity;
-		
 		if(x<0-radius) {
 			x +=scrnWidth+(2*radius);
 		} else if(x>scrnWidth+radius) {
@@ -35,8 +53,18 @@ public class Asteroid {
 	}
 	
 	public void draw(Graphics g) {
-		g.setColor(Color.gray);
-		g.drawOval((int)(x-radius+.5), (int)(y-radius-.5), (int)(2*radius),(int)(2*radius));
+		
+		
+		int[] xPtsArr = new int[xPts.size()];
+		int[] yPtsArr = new int[yPts.size()];
+		for (int i = 0; i < xPtsArr.length;i++) {
+			xPtsArr[i] = (int) (xPts.get(i)+x);
+			yPtsArr[i] = (int) (yPts.get(i)+y);
+		}
+				
+		g.setColor(Color.DARK_GRAY);
+		//g.drawOval((int)(x-radius+.5), (int)(y-radius-.5), (int)(2*radius),(int)(2*radius));
+		g.fillPolygon(xPtsArr, yPtsArr, xPtsArr.length);
 	}
 	
 	public boolean shipCollision(Ship ship) {
