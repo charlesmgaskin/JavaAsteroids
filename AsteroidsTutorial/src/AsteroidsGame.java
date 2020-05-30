@@ -1,6 +1,7 @@
 import java.applet.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class AsteroidsGame extends Applet implements KeyListener, Runnable{
 
@@ -24,7 +25,7 @@ public class AsteroidsGame extends Applet implements KeyListener, Runnable{
 		resize(width,height);	
 		shots=new Shot[41];
 		numAsteroids = 0;
-		level=0;
+		level=9;
 		astRadius=60;
 		minAstVel=.5;
 		maxAstVel=5;
@@ -177,7 +178,9 @@ public class AsteroidsGame extends Applet implements KeyListener, Runnable{
 		if(e.getKeyCode() == KeyEvent.VK_SPACE) {
 			shooting = true;
 		}
-		
+		if(e.getKeyCode() == KeyEvent.VK_Z) {
+			ship.teleport(ThreadLocalRandom.current().nextInt(0,dim.width+1), ThreadLocalRandom.current().nextInt(0,dim.height+1));
+		}
 	}
 
 	@Override
