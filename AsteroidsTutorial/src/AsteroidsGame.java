@@ -39,7 +39,6 @@ public class AsteroidsGame extends Applet implements KeyListener, Runnable{
 		thread=new Thread(this);
 		thread.start();
 		addKeyListener(this);
-		System.out.println("Test");
 	}
 	
 	public void setUpNextLevel() {
@@ -176,7 +175,6 @@ public class AsteroidsGame extends Applet implements KeyListener, Runnable{
 			ship.setTurningRight(true);
 		}
 		if(e.getKeyCode() == KeyEvent.VK_SPACE) {
-			System.out.println(numShots);
 			shooting = true;
 		}
 		
