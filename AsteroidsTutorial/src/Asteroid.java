@@ -20,21 +20,25 @@ public class Asteroid {
 		this.numSplit = numSplit;
 		
 		angle =0;
-		direction = 0.5 * Math.PI;
+		direction = 0.33 * Math.PI;
 		
 		double vel = minVelocity + Math.random()*(maxVelocity-minVelocity),
 				dir = 2*Math.PI*Math.random();
 		xVelocity = vel*Math.cos(dir);
 		yVelocity = vel*Math.sin(dir);
+		
 		finished = false;
 		while(!finished) {
 			angle = angle + (direction*Math.random());
-			xPts.add((int)(radius*Math.cos(angle)));
-			yPts.add((int)(radius*Math.sin(angle)));
 			if(angle >= 2*Math.PI) {
 				finished =true;
+				break;
 			}
+			System.out.println(angle);
+			xPts.add((int)(radius*Math.cos(angle)));
+			yPts.add((int)(radius*Math.sin(angle)));
 		}
+		System.out.println(xPts.size());
 	}
 	
 	public void move(int scrnWidth, int scrnHeight) {
